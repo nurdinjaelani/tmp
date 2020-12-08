@@ -1,0 +1,63 @@
+{
+  "scripts": {
+    "start": "yarn run build && yarn run serve",
+    "build": "yarn run build-css && yarn run build-js",
+    "build-css": "node-sass --omit-source-map-url --include-path node_modules static/sass --output-style compressed --output static/css && postcss --no-map --use autoprefixer --replace 'static/css/**/*.css'",
+    "prebuild-js": "yarn run copy-3rd-party-libs",
+    "build-js": "webpack",
+    "clean": "rm -rf node_modules yarn-error.log css static/css *.log *.sqlite _site/ build/ .jekyll-metadata .bundle",
+    "copy-3rd-party-libs": "yarn run copy-global-nav && yarn run copy-instant-page",
+    "copy-global-nav": "mkdir -p static/js/src/libs/global-nav && cp node_modules/@canonical/global-nav/dist/global-nav.js static/js/src/libs/global-nav",
+    "copy-instant-page": "mkdir -p static/js/src/libs/instant-page && cp node_modules/instant.page/instantpage.js static/js/src/libs/instant-page",
+    "format-python": "black --line-length 79 tests webapp",
+    "check-prettier": "prettier --check ./static/**.*",
+    "lint-js": "eslint static/js/src/**/*.js",
+    "lint-scss": "stylelint static/**/*.scss",
+    "lint-python": "flake8 webapp tests && black --check --line-length 79 tests webapp",
+    "serve": "./entrypoint 0.0.0.0:${PORT}",
+    "test": "yarn run lint-scss && yarn run lint-js && yarn run lint-python && yarn run test-python",
+    "test-python": "python3 -m unittest discover tests",
+    "test-js": "jest --passWithNoTests",
+    "update-test-json": "python3 scripts/update_test_json.py",
+    "watch": "concurrently \"yarn run watch-scss\" \"yarn run watch-js\"",
+    "watch-scss": "watch -p 'static/sass/**/*.scss' -c 'yarn run build-css'",
+    "watch-js": "watch -p 'static/js/src/**/*.js' -c 'yarn run build-js'"
+  },
+  "dependencies": {
+    "@babel/core": "7.12.0",
+    "@babel/preset-env": "7.12.0",
+    "@canonical/cookie-policy": "3.1.0",
+    "@canonical/global-nav": "2.4.5",
+    "@canonical/latest-news": "1.0.4",
+    "@sentry/browser": "5.26.0",
+    "autoprefixer": "10.0.1",
+    "babel-loader": "8.1.0",
+    "braces": "3.0.2",
+    "concurrently": "5.3.0",
+    "instant.page": "5.1.0",
+    "node-sass": "4.14.1",
+    "postcss": "8.1.1",
+    "postcss-cli": "8.1.0",
+    "vanilla-framework": "2.20.0",
+    "watch-cli": "0.2.3",
+    "webpack": "5.1.1",
+    "webpack-cli": "4.0.0"
+  },
+  "devDependencies": {
+    "eslint": "7.11.0",
+    "eslint-config-airbnb-base": "14.2.0",
+    "eslint-config-prettier": "6.12.0",
+    "eslint-plugin-import": "2.22.1",
+    "jest": "26.5.3",
+    "prettier": "2.1.2",
+    "stylelint": "13.7.2",
+    "stylelint-config-prettier": "8.0.2",
+    "stylelint-config-standard": "20.0.0",
+    "stylelint-order": "4.1.0",
+    "terser-webpack-plugin": "4.2.3"
+  },
+  "resolutions": {
+    "lodash": "^4.17.15",
+    "minimatch": "^3.0.2"
+  }
+}
